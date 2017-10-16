@@ -1,11 +1,18 @@
 import { router, store, iView } from './base';
-import App from '@/components/admins/users/index.vue';
+import Vue from 'vue'
+import App from '@/vues/admins/users/index.vue';
 
-const routers = {
+// const routers = {
+//     // {
+//     //     path: '/',
+//     //     meta: {
+//     //         title: '列表'
+//     //     },
+//     //     component: (resolve) => require(['@/vues/admins/users/index.vue'], resolve)
+//     // },
+// }
 
-}
-
-router.addRoutes(routers)
+// router.addRoutes(routers)
 
 new Vue({
     el: '#app',

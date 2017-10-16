@@ -52,9 +52,6 @@
                     showUploadList: false,
                     defaultList: [],
                     format: ['jpg','jpeg','png', 'gif'],
-                    // headers: {
-                    //     'Authorization': 'Bearer ' + getToken()
-                    // },
                     name: "FileContent",
                     maxSize: 10240,      // 10M,
                     multiple: false,
@@ -71,7 +68,6 @@
         },
         methods: {
             uploadConfMerge: function(){
-                console.log(this.uploadConf.action);
                 this.cUploadConf = Util.extend(this.defaultUploadConf, this.uploadConf);
             },
             handleSuccess (res, file) {
@@ -134,7 +130,6 @@
         },
         mounted: function (){
             this.uploadList = this.uploadList.concat(this.$refs.upload.fileList);
-            // console.log(this.uploadList);
         }
     };
 </script>

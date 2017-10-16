@@ -1,6 +1,4 @@
 {{-- */$title="404 not found";/* --}}
-@extends('layouts.home')
-
 @section('style')
     <style type="text/css">
 
@@ -16,7 +14,7 @@
         </div>
         <div class="weui-msg__opr-area">
             <p class="weui-btn-area">
-                <a href="{{ route('index') }}" class="weui-btn weui-btn_primary">首页</a>
+                <a href="" class="weui-btn weui-btn_primary">首页</a>
                 {{-- <a href="javascript:;" class="weui-btn weui-btn_default">辅助操作</a> --}}
             </p>
         </div>

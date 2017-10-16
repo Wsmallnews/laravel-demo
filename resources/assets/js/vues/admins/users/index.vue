@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import myTable from '@/components/admins/includes/myTable';
+    import myTable from '@/vues/admins/includes/myTable';
 
     export default {
         components: {
@@ -96,7 +96,7 @@
             },
             userDel(id) {
                 var _this = this;
-                Util.ajax({
+                window.Util.ajax({
                     url: "/api/users/" + id,
                     method: "DELETE",
                     success: function(result){

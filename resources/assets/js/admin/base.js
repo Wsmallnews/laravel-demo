@@ -12,7 +12,7 @@ Vue.use(iView);
 const router = new VueRouter({
     // mode: 'history',     //后端支持可开
     scrollBehavior: () => ({ y: 0 }),
-    routes: Routers
+    routes: []
 })
 router.beforeEach((to, from, next) => {
     // iView.LoadingBar.start();

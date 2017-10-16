@@ -34,49 +34,7 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-
-// import Vue from 'vue'
-// import iView from 'iview';
-
-window.Util = {
-    ajax: function (options) {
-        var defaults_options = {
-            url:'',
-            method:'get',
-        }
-
-        if (options.data != undefined) {
-            options.data.timeStamp = (new Date()).getTime();
-        }
-
-        if (options.method == 'get' && options.params == undefined) {
-            options.params = options.data != undefined ? options.data : {};
-        }
-
-        $.extend(defaults_options, options);
-
-        axios(defaults_options)
-            .then(function (response) {
-                if (defaults_options.success) {
-                    defaults_options.success(response.data, response);
-                }else {
-                    // iView.Notice.success({ title: '提示', desc: '操作成功' });
-                }
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    if (defaults_options.error) {
-                        defaults_options.error(response);
-                    }else {
-                        // iView.Notice.error({ title: '提示', desc: '操作失败' });
-                    }
-                } else {
-                    // iView.Notice.error({ title: '提示', desc: error.message });
-                }
-            });
-    }
+    console.error('CSRF token not found');
 }
 
 

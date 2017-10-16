@@ -12,7 +12,7 @@
 
     <!-- Styles -->
     @section('link')
-
+        <link href="{{ asset('css/admin/admin.css') }}" rel="stylesheet" type="text/css">
     @endsection
     @yield('link')
 
@@ -186,7 +186,7 @@
         <div class="index-div">
             <i-menu :mode="modeTop" :theme="theme" active-name="1">
                 <Spin>
-                <div class="layout-logo"><img :src="siteInfo.logo" /></div>
+                <div class="layout-logo"><img src="/images/logo.png" /></div>
             	</Spin>
                 <div class="layout-nav">
                     <Menu-item name="2">
@@ -214,38 +214,22 @@
 		<div>
             <Row type="flex">
                 <i-col class="layout-menu-left">
-                    <i-menu :theme="theme" width="auto" @on-select="jumpPage" active-name="{{ Request::url() }}" :open-names="['']">
+                    <i-menu :theme="theme" width="auto" active-name="{{ Request::url() }}" :open-names="['']">
                         <div class="layout-logo-left"></div>
-                        <Submenu name="{{ route('admin.users.index') }}" list="1">
+                        <Submenu name="{{ route('admin') }}" list="1">
                             <template slot="title">
                                 <Icon type="ios-people"></Icon>
                                 推广员管理
                             </template>
-                            <Menu-item name="{{ route('admin.users.index') }}" list="1-1">推广员列表</Menu-item>
+                            <Menu-item name="{{ route('admin.users.index') }}" list="1-1"><a href="{{ route('admin.users.index') }}">推广员列表</a></Menu-item>
                         </Submenu>
-                        <Submenu name="{{ route('admin.products.index') }}">
+                        <Submenu name="{{ route('admin') }}" list="1">
                             <template slot="title">
-                                <Icon type="ios-keypad"></Icon>
-                                产品管理
+                                <Icon type="document-text"></Icon>
+                                文章管理
                             </template>
-                            <Menu-item name="{{ route('admin.products.index') }}" >产品列表</Menu-item>
-                            <Menu-item name="{{ route('admin.products.create') }}" >产品添加</Menu-item>
-                        </Submenu>
-                        <Submenu name="{{ route('admin.orders.index') }}">
-                            <template slot="title">
-                                <Icon type="ios-keypad"></Icon>
-                                订单管理
-                            </template>
-                            <Menu-item name="{{ route('admin.orders.index') }}">订单列表</Menu-item>
-                            <Menu-item name="3-2">选项 2</Menu-item>
-                        </Submenu>
-                        <Submenu name="{{ route('admin.orders.index') }}">
-                            <template slot="title">
-                                <Icon type="social-usd"></Icon>
-                                钱包管理
-                            </template>
-                            <Menu-item name="{{ route('admin.wallets.index') }}">钱包列表</Menu-item>
-                            <Menu-item name="{{ route('admin.walletApplys.index') }}">申请提现列表</Menu-item>
+                            <Menu-item name="{{ route('admin.articles.index') }}" list="1-1"><a href="{{ route('admin.articles.index') }}">文章列表</a></Menu-item>
+                            <Menu-item name="{{ route('admin.articleCats.index') }}" list="1-1"><a href="{{ route('admin.articleCats.index') }}">分类列表</a></Menu-item>
                         </Submenu>
                     </i-menu>
                 </i-col>
@@ -253,11 +237,7 @@
                     <!-- <div class="layout-header"></div> -->
                     <div class="layout-breadcrumb">
                         <Breadcrumb>
-                            <Breadcrumb-item href="{{ route('admin.index.index') }}">首页</Breadcrumb-item>
-
-                            <Breadcrumb-item v-for="(item, index) in breadcrumb">
-                                @{{ item.text }}
-                            </Breadcrumb-item>
+                            <Breadcrumb-item href="{{ route('admin') }}">首页</Breadcrumb-item>
                         </Breadcrumb>
                     </div>
                     <div class="layout-content">
@@ -276,11 +256,7 @@
     </div>
 
     <!-- JavaScripts -->
-    <script src="/public{{ elixir('js/admin.js') }}" type="text/javascript"></script>
-    <script src="/public{{ elixir('js/adminPlus.js') }}" type="text/javascript"></script>
-
-    <script src="{{ asset('public/js/iview-admin.js') }}" type="text/javascript"></script>
-
+    <script src="{{ asset('js/admin/admin.js') }}" type="text/javascript"></script>
     @section('script')
         <script type="text/javascript">
 

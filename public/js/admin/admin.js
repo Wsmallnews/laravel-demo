@@ -873,8 +873,19 @@ var Util = {
 
         return objFirst;
     },
-    jumpPage: function jumpPage(url) {
-        window.location.href = url;
+    initEdit: function initEdit(obj, options) {
+        window.UEDITOR_HOME_URL = "/public/plus/ueditor";
+        window.UEDITOR_CONFIG.toolbars = [['fullscreen', 'source', 'undo', 'redo', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain'], ['forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', 'simpleupload', 'insertimage']];
+        window.UEDITOR_CONFIG.serverUrl = "/myEditorUpload";
+
+        var ue = UE.getEditor(obj);
+        ue.ready(function () {
+            var token = document.head.querySelector('meta[name="csrf-token"]');
+            ue.execCommand('serverparam', '_token', token.content);
+            ue.execCommand('serverparam', 'file_type', 'editor');
+        });
+
+        return ue;
     }
 };
 
@@ -13150,9 +13161,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 showUploadList: false,
                 defaultList: [],
                 format: ['jpg', 'jpeg', 'png', 'gif'],
-                // headers: {
-                //     'Authorization': 'Bearer ' + getToken()
-                // },
                 name: "FileContent",
                 maxSize: 10240, // 10M,
                 multiple: false,
@@ -13168,7 +13176,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {},
     methods: {
         uploadConfMerge: function uploadConfMerge() {
-            console.log(this.uploadConf.action);
             this.cUploadConf = __WEBPACK_IMPORTED_MODULE_0__libs_util__["a" /* default */].extend(this.defaultUploadConf, this.uploadConf);
         },
         handleSuccess: function handleSuccess(res, file) {
@@ -13231,7 +13238,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {
         this.uploadList = this.uploadList.concat(this.$refs.upload.fileList);
-        // console.log(this.uploadList);
     }
 });
 

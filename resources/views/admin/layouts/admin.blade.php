@@ -151,6 +151,17 @@
             margin-bottom: 24px;
         }
 
+        .ivu-form.form-edit input {
+            width: 300px;
+        }
+
+        .ivu-form.form-edit textarea {
+            width: 400px;
+        }
+
+        /*.ivu-form.form-edit input.ivu-input-number-input {
+            width: 300px;
+        }*/
         /* 右边内容 */
 
         /* 底部内容 */
@@ -170,6 +181,8 @@
             text-align: center;
             color: #FFFFFF;
         }
+
+        #edui1 {z-index: 0 !important;}
     </style>
 
     @yield('style')

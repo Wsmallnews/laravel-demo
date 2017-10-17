@@ -7,7 +7,7 @@
 
 @section('content')
     <div class="articles-save">
-        <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
+        <i-form ref="formValidate" class="form-edit" :model="formValidate" :rules="ruleValidate" :label-width="90">
             <Form-item label="标题" prop="title">
                 <i-input v-model="formValidate.title" placeholder="标题"></i-input>
             </Form-item>
@@ -27,7 +27,7 @@
             </Form-item>
 
             <Form-item label="摘要" prop="desc">
-                <Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="摘要"></Input>
+                <i-input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 3,maxRows: 5}" placeholder="摘要，自动获取内容前 200 字"></i-input>
             </Form-item>
 
             <Form-item label="关键字" prop="keywords">
@@ -35,11 +35,15 @@
             </Form-item>
 
             <Form-item label="状态" prop="status">
-                <i-input v-model="formValidate.status" placeholder="状态"></i-input>
+                <radio-group v-model="formValidate.status">
+                    <Radio label="1">有效</Radio>
+                    <Radio label="0">无效</Radio>
+                </radio-group>
             </Form-item>
 
             <Form-item label="浏览量" prop="view_num">
-                <i-input v-model="formValidate.view_num" placeholder="浏览量"></i-input>
+                {{-- <i-input v-model="formValidate.view_num"></i-input> --}}
+                <input-number :min="1" v-model="formValidate.view_num" placeholder="浏览量"></input-number>
             </Form-item>
 
             <Form-item>
@@ -51,9 +55,9 @@
 @endsection
 @section('script')
     <!-- 本页面专属js 文件 -->
-
+    <script src="{{ asset('plus/ueditor/ueditor.config.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('plus/ueditor/ueditor.all.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
-
         var page = Util.Vue({
             el: "#app",
             data: {
@@ -65,8 +69,8 @@
                     content: "",
                     desc: "",
                     keywords: "",
-                    status: "",
-                    view_num: ""
+                    status: 0,
+                    view_num: 0
                 },
                 ruleValidate: {
                     title: [
@@ -82,30 +86,28 @@
                 uploadConf: {
                     action: "{{ route("myUpload") }}",
                     defaultList: [
-                        {
-                            name:"",
-                            url: ""
-                        }
+
                     ],
                     multiple: true,
                     data: {file_type: "articles"}
-                }
+                },
+                ue: null
             },
             methods: {
                 handleSubmit: function () {
                     var _this = this;
                     _this.$refs["formValidate"].validate((valid) => {
                         if (valid) {
-                            if (_this.formValidate.id) {
-                                var url = "{{ route('admin.articles.store') }}"
-                                var method = "POST";
-                            }else {
-                                var url = "/admin/articles/" + _this.formValidate.id
-                                var method = "PATCH";
+                            this.formValidate.images = this.$refs.uploadImg.uploadList;
+                            _this.formValidate.description = _this.ue.getContent();
+
+                            var method = "POST";
+                            if (_this.formValidate.id != "") {
+                                method = 'PATCH';
                             }
 
                             Util.ajax({
-                                url: url,
+                                url: "/admin/articles" + (_this.formValidate.id ? "/"+_this.formValidate.id : ""),
                                 method: method,
                                 data: _this.formValidate,
                                 success: function(result){
@@ -128,6 +130,7 @@
                 }
             },
             created: function () {
+                var _this = this;
                 @if (isset($article_json) && !empty($article_json))
                     var article_json = {!! $article_json !!};
                     for (var i in _this.formValidate) {
@@ -136,6 +139,8 @@
 
                     _this.uploadConf.defaultList = {!! $article['images'] !!};
                 @endif
+
+                _this.ue = Util.initEdit('content');
             }
         });
     </script>

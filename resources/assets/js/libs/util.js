@@ -78,6 +78,31 @@ const Util = {
         }
 
         return objFirst;
+    },
+    initEdit: function(obj, options){
+        window.UEDITOR_HOME_URL = "/public/plus/ueditor";
+        window.UEDITOR_CONFIG.toolbars = [
+            [
+                'fullscreen', 'source', 'undo', 'redo', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough',
+                'superscript', 'subscript', 'removeformat', 'formatmatch',
+                'autotypeset', 'blockquote', 'pasteplain',
+            ],
+            [
+                'forecolor',
+                'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall',
+                'cleardoc', 'simpleupload', 'insertimage'
+            ]
+        ];
+        window.UEDITOR_CONFIG.serverUrl = "/myEditorUpload";
+
+        var ue = UE.getEditor(obj);
+        ue.ready(function() {
+            let token = document.head.querySelector('meta[name="csrf-token"]');
+            ue.execCommand('serverparam', '_token', token.content);
+            ue.execCommand('serverparam', 'file_type', 'editor');
+        });
+
+        return ue;
     }
 }
 

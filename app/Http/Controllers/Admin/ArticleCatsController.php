@@ -35,7 +35,7 @@ class ArticleCatsController extends CommonController {
 
 
 	public function create() {
-		return view("admin.articleCats.create", [
+		return view("admin.articleCats.create_and_edit", [
 			"title" => "文章分类添加"
 		]);
 	}
@@ -56,9 +56,10 @@ class ArticleCatsController extends CommonController {
 	public function edit($id) {
 		$articleCat = ArticleCat::findOrFail($id);
 
-		return view("admin.articles.edit", [
+		return view("admin.articles.create_and_edit", [
 			"title" => "文章分类编辑",
-			"articleCat" => $articleCat
+			"articleCat" => $articleCat,
+			"articleCat_json" => json_encode($articleCat)
 		]);
 	}
 

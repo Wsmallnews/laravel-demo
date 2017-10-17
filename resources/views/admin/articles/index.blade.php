@@ -9,8 +9,8 @@
     <div class="articles">
         <my-table :list-conf="listConf" ref="listTable" :noSearch="true">
             <template slot="formItem" scope="props">
-                <Form-item prop="order_code">
-                    <i-input type="text" v-model="props.parmas.order_code" placeholder="文章标题"></i-input>
+                <Form-item prop="title">
+                    <i-input type="text" v-model="props.parmas.title" placeholder="文章标题"></i-input>
                 </Form-item>
             </template>
 

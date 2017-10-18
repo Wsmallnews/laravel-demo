@@ -169,6 +169,8 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
         // Laravel\Passport\PassportServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,     // 图片处理
+        Baum\Providers\BaumServiceProvider::class,          // 无限级联
+        
         /*
          * Application Service Providers...
          */
@@ -228,7 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,     // 图片处理
         'MyUpload' => App\Facades\MyUpload::class,   // 图片上传
-        
+
     ],
 
 ];

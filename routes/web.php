@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function($router){
     $router->resource('users', 'UsersController', ['names' => 'admin.users']);
 
     // 文章管理路由
+    $router->patch('articles/{article}/updateStatus', 'ArticlesController@updateStatus')->name('admin.articles.updateStatus');
     $router->resource('articles', 'ArticlesController', ['names' => 'admin.articles']);
 
     // 文章分类管理路由

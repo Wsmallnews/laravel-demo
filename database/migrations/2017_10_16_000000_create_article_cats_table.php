@@ -17,7 +17,10 @@ class CreateArticleCatsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name')->comment('分类名称');
-            $table->integer('parent_id');
+            $table->integer('parent_id')->default(0)->nullable()->index();
+            $table->integer('lft')->nullable()->index()->comment('无线级联使用');
+            $table->integer('rgt')->nullable()->index()->comment('无线级联使用');
+            $table->integer('depth')->nullable()->comment('无线级联使用');
             $table->tinyInteger('is_nav')->comment('是否导航栏');
             $table->smallInteger('sort_order')->comment('排序');
             $table->text('desc')->comment('描述');

@@ -793,6 +793,7 @@ var Util = {
         var defaults = {
             el: '#app',
             data: {
+                spinShow: true,
                 theme: 'dark', // light
                 modeTop: 'horizontal',
                 modeMenu: 'vertical',
@@ -801,6 +802,18 @@ var Util = {
                 stripe: true
             }
         };
+
+        // var mounted = undefined;
+        // if (options.mounted != undefined) {
+        //     var mounted = options.mounted;
+        // }
+        //
+        // options.mounted = function () {
+        //     // this.spinShow = false;      // 取消 等待框
+        //     if (mounted != undefined) {
+        //         mounted();  // 调用页面mounted
+        //     }
+        // }
 
         var cur_options = this.extend(defaults, options);
 
@@ -13166,7 +13179,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 multiple: false,
                 type: "drag",
                 imgName: '',
-                visible: false
+                visible: false,
+                headers: {
+                    'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content
+                }
             },
             cUploadConf: {},
             uploadList: []
@@ -15647,7 +15663,7 @@ exports = module.exports = __webpack_require__(9)();
 
 
 // module
-exports.push([module.i, "\n.oper_div[data-v-83f6ada8]{\r\n\tmargin-bottom: 20px;\n}\r\n", ""]);
+exports.push([module.i, "\n.oper_div[data-v-83f6ada8]{\r\n\tmargin-bottom: 20px;\n}\n.ivu-form.form-search .ivu-cascader[data-v-83f6ada8] {\r\n    width: 230px;\r\n    margin-top: 2px;\n}\r\n", ""]);
 
 // exports
 
@@ -75794,6 +75810,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [(_vm.searchShow) ? _c('Form', {
     ref: "search",
+    staticClass: "form-search",
     attrs: {
       "model": _vm.cListConf.searchParams,
       "inline": ""

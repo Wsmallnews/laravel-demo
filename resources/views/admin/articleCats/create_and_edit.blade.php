@@ -13,7 +13,7 @@
             </Form-item>
 
             <Form-item label="上级分类" prop="parent_id">
-                <i-input v-model="formValidate.parent_id" placeholder="分类"></i-input>
+                <Cascader :data="catList" v-model="formValidate.parent_id" ></Cascader>
             </Form-item>
 
             {{-- <Form-item label="is_nav" prop="is_nav">
@@ -47,10 +47,11 @@
         var page = Util.Vue({
             el: "#app",
             data: {
+                catList: [],
                 formValidate: {
                     id: 0,
                     name: "",
-                    parent_id: "",
+                    parent_id: [],
                     is_nav: 0,
                     sort_order: 50,
                     desc: ""
@@ -101,6 +102,19 @@
                         _this.formValidate[i] = articleCat_json[i];
                     }
                 @endif
+
+                Util.ajax({
+                    url: "{{ route('admin.articleCats.index') }}",
+                    method: 'get',
+                    success: function(result){
+                        if (result.error == 0) {
+                            _this.catList = result.result;
+                        }
+                    }
+                });
+            },
+            mounted: function(){
+                this.spinShow = false;
             }
         });
     </script>

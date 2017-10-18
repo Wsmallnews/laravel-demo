@@ -58,6 +58,9 @@
                     type: "drag",
                     imgName: '',
                     visible: false,
+                    headers: {
+                        'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content
+                    }
                 },
                 cUploadConf: {},
                 uploadList: []

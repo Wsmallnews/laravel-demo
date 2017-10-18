@@ -3,6 +3,7 @@ const Util = {
         var defaults = {
             el: '#app',
             data: {
+                spinShow: true,
                 theme: 'dark',  // light
                 modeTop: 'horizontal',
                 modeMenu: 'vertical',
@@ -11,6 +12,18 @@ const Util = {
                 stripe: true,
             }
         };
+
+        // var mounted = undefined;
+        // if (options.mounted != undefined) {
+        //     var mounted = options.mounted;
+        // }
+        //
+        // options.mounted = function () {
+        //     // this.spinShow = false;      // 取消 等待框
+        //     if (mounted != undefined) {
+        //         mounted();  // 调用页面mounted
+        //     }
+        // }
 
         var cur_options = this.extend(defaults, options);
 

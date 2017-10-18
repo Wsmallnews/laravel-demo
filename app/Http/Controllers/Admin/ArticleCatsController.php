@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Models\ArticleCat;
 use App\Exceptions\MyException;
+use App\Http\Requests\ArticleCatRequest;
 
 class ArticleCatsController extends CommonController {
     /**
@@ -19,7 +20,11 @@ class ArticleCatsController extends CommonController {
 
 	public function index(Request $request) {
 		if ($request->ajax()) {
-            $articleCats = ArticleCat::paginate($request->input('page_size', 10));
+			$articleCats = ArticleCat::where('parent_id', 0)->get();
+
+	        foreach($articleCats as $key => $descendant) {
+	            $articleCats[$key]->children = array_values($descendant->getDescendants()->toHierarchy()->toArray());
+	        }
 
             return response()->json([
                 'error' => 0,
@@ -42,8 +47,10 @@ class ArticleCatsController extends CommonController {
 
 
 	public function store(ArticleCatRequest $request, ArticleCat $articleCat) {
+		$parent_ids = $request->input('parent_id');
+
 		$articleCat->name = $request->input('name');
-		$articleCat->parent_id = $request->input('parent_id');
+		$articleCat->parent_id = $parent_ids[count($parent_ids) - 1];
 		$articleCat->is_nav = $request->input('is_nav');
 		$articleCat->sort_order = $request->input('sort_order');
 		$articleCat->desc = $request->input('desc');
@@ -55,6 +62,13 @@ class ArticleCatsController extends CommonController {
 
 	public function edit($id) {
 		$articleCat = ArticleCat::findOrFail($id);
+		$articleCats = $articleCat->ancestorsAndSelf()->get();
+
+		$parent_ids = [];
+		foreach($articleCats as $key => $value){
+			$parent_ids[] = $value->id;
+		}
+		$articleCat->parent_id = $parent_ids;
 
 		return view("admin.articles.create_and_edit", [
 			"title" => "文章分类编辑",
@@ -68,8 +82,10 @@ class ArticleCatsController extends CommonController {
         $articleCat = ArticleCat::findOrFail($id);
 
         if (!empty($articleCat)) {
+			$parent_ids = $request->input('parent_id');
+
 			$articleCat->name = $request->input('name');
-			$articleCat->parent_id = $request->input('parent_id');
+			$articleCat->parent_id = $parent_ids[count($parent_ids) - 1];
 			$articleCat->is_nav = $request->input('is_nav');
 			$articleCat->sort_order = $request->input('sort_order');
 			$articleCat->desc = $request->input('desc');

@@ -147,16 +147,21 @@
             padding: 10px;
         }
 
-        .oper_div {
-            margin-bottom: 24px;
-        }
-
         .ivu-form.form-edit input {
             width: 300px;
         }
 
         .ivu-form.form-edit textarea {
             width: 400px;
+        }
+
+        .ivu-form.form-edit .ivu-cascader{
+            width: 300px;
+        }
+
+        .ivu-form.form-search .ivu-cascader {
+            width: 230px;
+            margin-top: 2px;
         }
 
         /*.ivu-form.form-edit input.ivu-input-number-input {
@@ -182,6 +187,19 @@
             color: #FFFFFF;
         }
 
+        .ivu-spin.page-loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 101;
+        }
+
+        .ivu-spin.page-loading .ivu-spin-main{
+            background: #FFFFFF;
+            text-align: center;
+        }
+
         #edui1 {z-index: 0 !important;}
     </style>
 
@@ -196,6 +214,13 @@
 </head>
 <body>
     <div id="app" class="layout">
+        <div class="page-loading ivu-spin ivu-spin-large ivu-spin-fix" v-if="spinShow">
+            <div class="ivu-spin-main">
+                <span class="ivu-spin-dot"></span>
+                <div class="ivu-spin-text">loading...</div>
+            </div>
+        </div>
+
         <div class="index-div">
             <i-menu :mode="modeTop" :theme="theme" active-name="1">
                 <Spin>

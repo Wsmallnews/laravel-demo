@@ -1,6 +1,6 @@
 <template>
     <div class="table-index" style="width: 98%;">
-        <Form ref="search" :model="cListConf.searchParams" inline v-if="searchShow">
+        <Form ref="search" class="form-search" :model="cListConf.searchParams" inline v-if="searchShow">
             <slot name="formItem" :parmas="cListConf.searchParams" >
 
             </slot>
@@ -168,5 +168,10 @@
 <style scoped>
 .oper_div{
 	margin-bottom: 20px;
+}
+
+.ivu-form.form-search .ivu-cascader {
+    width: 230px;
+    margin-top: 2px;
 }
 </style>

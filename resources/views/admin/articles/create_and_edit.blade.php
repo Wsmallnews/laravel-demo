@@ -13,7 +13,7 @@
             </Form-item>
 
             <Form-item label="分类" prop="cat_id">
-                <i-input v-model="formValidate.cat_id" placeholder="分类"></i-input>
+                <Cascader :data="catList" v-model="formValidate.cat_id" ></Cascader>
             </Form-item>
 
             <Form-item label="图片" prop="images">
@@ -61,10 +61,11 @@
         var page = Util.Vue({
             el: "#app",
             data: {
+                catList: [],
                 formValidate: {
                     id: 0,
                     title: "",
-                    cat_id: "",
+                    cat_id: [],
                     images: "",
                     content: "",
                     desc: "",
@@ -76,12 +77,9 @@
                     title: [
                         { required: true, message: '请输入标题', trigger: 'blur' }
                     ],
-                    cat_id: [
-                        { required: true, message: '请选择文章分类', trigger: 'blur' }
-                    ],
-                    content: [
-                        { required: true, message: '请输入文章内容', trigger: 'blur' }
-                    ]
+                    // cat_id: [
+                    //     { required: true, message: '请选择文章分类', trigger: 'blur' }
+                    // ],
                 },
                 uploadConf: {
                     action: "{{ route("myUpload") }}",
@@ -96,10 +94,16 @@
             methods: {
                 handleSubmit: function () {
                     var _this = this;
+
                     _this.$refs["formValidate"].validate((valid) => {
                         if (valid) {
                             this.formValidate.images = this.$refs.uploadImg.uploadList;
-                            _this.formValidate.description = _this.ue.getContent();
+                            _this.formValidate.content = _this.ue.getContent();
+
+                            if (_this.formValidate.content == '') {
+                                _this.$Notice.error({ title: '提示', desc: "文章内容必须填写" });
+                                return;
+                            }
 
                             var method = "POST";
                             if (_this.formValidate.id != "") {
@@ -141,6 +145,19 @@
                 @endif
 
                 _this.ue = Util.initEdit('content');
+
+                Util.ajax({
+                    url: "{{ route('admin.articleCats.index') }}",
+                    method: 'get',
+                    success: function(result){
+                        if (result.error == 0) {
+                            _this.catList = result.result;
+                        }
+                    }
+                });
+            },
+            mounted: function(){
+                this.spinShow = false;
             }
         });
     </script>

@@ -167,10 +167,11 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-        // Laravel\Passport\PassportServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,     // 图片处理
         Baum\Providers\BaumServiceProvider::class,          // 无限级联
-        
+        Overtrue\LaravelWechat\ServiceProvider::class,      // 微信sdk
+
         /*
          * Application Service Providers...
          */
@@ -179,7 +180,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\MyUploadServiceProvider::class,       // 图片上传处理
+        App\Providers\MyRepoServiceProvider::class,       // 图片上传处理
     ],
 
     /*
@@ -228,9 +229,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Image' => Intervention\Image\Facades\Image::class,     // 图片处理
-        'MyUpload' => App\Facades\MyUpload::class,   // 图片上传
 
+        // custom
+        'Image' => Intervention\Image\Facades\Image::class,     // 图片处理
+        'MyUpload' => App\Facades\MyUpload::class,              // 图片上传
+        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,   // 微信 sdk
     ],
 
 ];

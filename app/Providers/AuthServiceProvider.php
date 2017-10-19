@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
+use Carbon\Carbon;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,8 +32,8 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->isSuperAdmin();
         // });
 
-        // Passport::routes();
-        // Passport::tokensExpireIn(Carbon::now()->addHours(24));   // 访问令牌有效期，1小时
-        // Passport::refreshTokensExpireIn(Carbon::now()->addHours(24));    // 刷新令牌 有效期，24小时
+        Passport::routes();
+        Passport::tokensExpireIn(Carbon::now()->addHours(24));   // 访问令牌有效期，1小时
+        Passport::refreshTokensExpireIn(Carbon::now()->addHours(24));    // 刷新令牌 有效期，24小时
     }
 }

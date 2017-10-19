@@ -3,8 +3,10 @@
 use Illuminate\Support\ServiceProvider;
 use Session;
 use View;
+use Auth;
+use App\Repositories\ThirdGuard;
 
-class MyUploadServiceProvider extends ServiceProvider {
+class MyRepoServiceProvider extends ServiceProvider {
 
 	/**
 	 * Bootstrap any application services.
@@ -30,6 +32,15 @@ class MyUploadServiceProvider extends ServiceProvider {
 			'App\Contracts\MyUpload',
 			'App\Repositories\LocalUpload'
 		);
+
+		/**
+		 * name => thirdwc
+		 * config => [driver => third, provider => wx_users]
+		 * @var [type]
+		 */
+		Auth::extend('third', function ($app, $name, array $config) {		// 注册第三方认证
+			return ThirdGuard($app, $name, $config);
+        });
 	}
 
 }

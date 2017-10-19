@@ -47,9 +47,14 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
         ],
+
+        'thirdwc' => [
+            'driver' => 'third',
+            'provider' => 'wx_users'
+        ]
     ],
 
     /*
@@ -75,9 +80,14 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        'users' => [
+        'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+
+        'wx_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\WxUser::class,
         ],
 
         // 'users' => [

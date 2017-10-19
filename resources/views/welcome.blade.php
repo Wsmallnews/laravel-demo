@@ -63,6 +63,13 @@
                 margin-bottom: 30px;
             }
         </style>
+
+        <script type="text/javascript">
+            window.Laravel = {!! json_encode([
+                'wx_access_token' => $wx_access_token
+                ])
+            !!}
+        </script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">

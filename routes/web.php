@@ -24,10 +24,14 @@ Route::group([], function($router)
     $router->get('fileOper/{path}', 'FilesController@fileOper')->name('fileOper')->where(['path' => '^[A-Za-z\d\/]*.(png|jpg|jpeg|gif|bmp)$']);
 });
 
-Route::group(['prefix' => '', 'namespace' => 'Demo'], function($router){
-    $router->get('index', 'IndexController@index');
+// Route::group(['prefix' => '', 'namespace' => 'Demo'], function($router){
+//     $router->get('index', 'IndexController@index');
+//
+//     $router->resource('users', 'UsersController');
+// });
 
-    $router->resource('users', 'UsersController');
+Route::group(['prefix' => 'deskapi', 'namespace' => 'DeskApi', 'middleware' => ['weauth']], function($router){
+    $router->get('/', 'IndexController@index');
 });
 
 

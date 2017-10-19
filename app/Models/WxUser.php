@@ -23,9 +23,10 @@ class WxUser extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'access_token', 'expire_in',
+        'access_token', 'expire_at',
     ];
 
+    protected $dates = ['expire_at'];
 
     public function accessToken(){
         $wxUserS = session('wechat.oauth_user');

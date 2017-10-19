@@ -39,7 +39,9 @@ class MyRepoServiceProvider extends ServiceProvider {
 		 * @var [type]
 		 */
 		Auth::extend('third', function ($app, $name, array $config) {		// 注册第三方认证
-			return ThirdGuard($app, $name, $config);
+			$guard = new ThirdGuard($app, $name, $config);				// 初始化 thirdGuard
+			$user = $guard->user();										// 初始化用户信息
+			return $guard;												// 返回 guard
         });
 	}
 

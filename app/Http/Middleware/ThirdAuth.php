@@ -8,7 +8,7 @@ use EasyWeChat;
 use App\Models\WxUser;
 use Log;
 
-class WeAuth
+class ThirdAuth
 {
     /**
      * Handle an incoming request.

@@ -2,16 +2,18 @@
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Carbon\Carbon;
 
 class ThirdGuard implements Guard{
 
 	public $user = null;
 
-	public function __construct($app, $name, array $config)
+	public function __construct($app, $name, array $config, $callback)
     {
 		$this->app = $app;
 		$this->name = $name;
 		$this->config = $config;
+		$this->$callback = $callback;
     }
 
 
@@ -42,10 +44,6 @@ class ThirdGuard implements Guard{
      */
     public function user()
     {
-        if ($this->loggedOut) {
-            return;
-        }
-
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
         // every call to this method because that would be tremendously slow.
@@ -53,33 +51,8 @@ class ThirdGuard implements Guard{
             return $this->user;
         }
 
-        $id = $this->session->get($this->getName());
-
-        // First we will try to load the user using the identifier in the session if
-        // one exists. Otherwise we will check for a "remember me" cookie in this
-        // request, and if one exists, attempt to retrieve the user using that.
-        $user = null;
-
-        if (! is_null($id)) {
-            if ($user = $this->provider->retrieveById($id)) {
-                $this->fireAuthenticatedEvent($user);
-            }
-        }
-
-        // If the user is null, but we decrypt a "recaller" cookie we can attempt to
-        // pull the user data on that cookie which serves as a remember cookie on
-        // the application. Once we have a user we can return it to the caller.
-        $recaller = $this->recaller();
-
-        if (is_null($user) && ! is_null($recaller)) {
-            $user = $this->userFromRecaller($recaller);
-
-            if ($user) {
-                $this->updateSession($user->getAuthIdentifier());
-
-                $this->fireLoginEvent($user, true);
-            }
-        }
+        // 通过 access_token 获取用户信息
+		$user = $this->accessAutoLogin();
 
         return $this->user = $user;
     }
@@ -88,7 +61,7 @@ class ThirdGuard implements Guard{
 	public function id()
     {
         if ($this->user()) {
-            return $this->user()->getAuthIdentifier();
+            return $this->user()->id;
         }
     }
 
@@ -100,9 +73,8 @@ class ThirdGuard implements Guard{
      */
     public function validate(array $credentials = [])
     {
-        $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
-
-        return $this->hasValidCredentials($user, $credentials);
+        $this->accessAutoLogin();
+		return !is_null($this->user);	// 如果当前用户存在，返回 true
     }
 
 
@@ -122,11 +94,27 @@ class ThirdGuard implements Guard{
 
 	// 通过 id 登录
 	public function loginUsingId($id) {
-		$user = $this->config['provider'];		// model (WxUser)
-		$user = $user->findOrFail($id);
+		$user = $this->getModel()->findOrFail($id);
 
 		$this->user = $user;
 	}
 
 
+	private function accessAutoLogin(){
+		$access_token = request()->input('wx_access_token');
+
+		$user = $this->getModel()->where('access_token', $access_token)->find($id);
+
+		$this->user = null;
+		if ($user) {
+			if (Carbon::now() < $user->expire_at) {
+				$this->user = $user;
+			}
+		}
+	}
+
+
+	private function getModel() {
+		return $this->config['provider'];		// model (WxUser)
+	}
 }

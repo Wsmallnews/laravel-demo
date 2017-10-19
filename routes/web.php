@@ -30,7 +30,7 @@ Route::group([], function($router)
 //     $router->resource('users', 'UsersController');
 // });
 
-Route::group(['prefix' => 'deskapi', 'namespace' => 'DeskApi', 'middleware' => ['weauth']], function($router){
+Route::group(['prefix' => 'deskapi', 'namespace' => 'DeskApi', 'middleware' => ['thirdauth:thirdwc']], function($router){
     $router->get('/', 'IndexController@index');
 });
 

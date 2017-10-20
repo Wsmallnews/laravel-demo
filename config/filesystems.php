@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'public'),
 
     /*
     |--------------------------------------------------------------------------
@@ -51,7 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => '/storage',
             'visibility' => 'public',
         ],
 
@@ -61,6 +61,18 @@ return [
             'secret' => env('AWS_SECRET'),
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
+        ],
+
+        'qcos' => [     // 腾讯云 对象存储
+            'driver'    => 'qcos',
+            'root' => env('QCLOUD_ROOT', 'http://imgtest.smallnews.top/'),
+            'url' => env('QCLOUD_ROOT', 'http://imgtest.smallnews.top/'),
+            'bucket' => env('QCLOUD_BUCKET'),
+            'app_id' => env('QCLOUD_APPID'),
+            'secret_id' => env('QCLOUD_SECRET_ID'),
+            'secret_key' => env('QCLOUD_SECRET_KEY'),
+            'timeout' => env('QCLOUD_TIMEOUT', 180),
+            'region' => env('QCLOUD_REGION', 'sh'),
         ],
 
     ],

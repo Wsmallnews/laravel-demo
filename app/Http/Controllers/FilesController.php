@@ -13,6 +13,7 @@ class FilesController extends Controller
         if ($request->hasFile('FileContent')){
             $result = MyUpload::upload($request->file('FileContent'), $request->input('file_type', 'avatars'));
             if (!$result['error']) {
+                print_r($result);exit;
                 $result['filename'] = normalizerUrl(config('app.url')."/".config('app.www_dir')."/files/fileOper/".$result['data']['url']);
             }
         }else {

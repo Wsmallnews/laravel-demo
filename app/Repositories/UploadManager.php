@@ -1,190 +1,214 @@
 <?php namespace App\Repositories;
 
-use App\Contracts\MyUpload;
-use App\Http\Requests;
-// use Session;
+use Session;
 use Image;
 use Storage;
+use App\Contracts\MyUpload;
+use Illuminate\HTTP\File;
 
-class UploadManager implements MyUpload {
-
-	// private $img = '';				//图片对象
-	// private $save_path = '';		//最终文件保存路径
-	// private $mime_type = '';		//文件mime 类型
-	// private $extension = '';		//图片后缀名
+class UploadManager implements MyUpload{
+	private $file = '';
+	private $type = '';
+	private $extension = '';		//图片后缀名
 	// private $tmp_path = '';			//临时文件路径
-	// private $dir = '/';		//上传文件保存根目录
-	// private $real_dir = '';			//图片真实保存目录
-	// private $filename = '';			//生成文件文件名，不带后缀
-    // private $filesize = '';			//文件大小
+	private $filename = '';			//生成文件文件名，不带后缀
+	private $filesize = '';			//文件大小
+	// private $base_dir = '';			// 基础目录，解决访问存储路径不一致
+	private $upload_dir = '';			//图片真实保存目录
+	// private $base_url = '';			// 基础图片路径，解决访问存储路径不一致
+	private $upload_url = '';			//图片真实保存目录
 
-	protected $extension = '';		//图片后缀名
-	protected $tmpPath = '';			//临时文件路径
-	protected $mimeType = '';			//图片真实保存目录
-	protected $filename = '';			//生成文件文件名，不带后缀
-    protected $filesize = '';			//文件大小
 
-	protected $img = '';			//原始文件
+	public function upload($file, $type = 'avatars'){
+		//文件的扩展名
+		$this->file = $file;
+		$this->type = $type;
+		$this->extension = strtolower($file->getClientOriginalExtension());	//获取文件的扩展名
+		// $this->tmp_path = $file->getRealPath();	//这个表示的是缓存在tmp文件夹下的文件的绝对路径
+		$this->filename = strtolower($file->hashName());		// 根据hash 值 生成文件名
+        $this->filesize = $file->getClientSize();
 
-	protected $storage = [];		// 文件存储驱动
-
-	protected $cutConfig = [];
-
-	public function __construct(){
-
+		return $this->saveFile();
 	}
 
 
 	/**
-	 * 图片裁剪尺寸
-	 * @author @smallnews 2017-04-15
-	 * @param  [type] $name [description]
-	 * @return [type]       [description]
-	 */
-	public function cutConfig($name){
-		$this->cutConfig = $cutSize = $this->getConfig($name);
-
-		return $this;
-	}
-
-
-	// 文件处理模式
-	public function mode($name, $file = null){
-		$file = $file ? : $this->getDefaultFile();
-
-		// $this->setProperty($file);			// 将文件的属性保存的 当前对象的属性中
-		$this->img = Image::make($this->tmp_path);		// 创建图片对象
-
-		$uploadMode = 'upload'.ucfirst($name).'Mode';
-
-        if (method_exists($this, $uploadMode)) {
-            return $this->{$uploadMode}();
-        } else {
-            throw new InvalidArgumentException("UploadMode [{$name}] is not supported.");
-        }
-	}
-
-
-	/*
-		文件上传模式
-	 */
-	protected function uploadFileMode(){
-
-
-
-	}
-
-
-	/**
-	 * 图片上传模式
-	 */
-	protected function uploadImageMode(){
-		$cutConfig = $this->cutConfig;
-
-		$cutMode = 'cut'.ucfirst($cutConfig['type']).'Mode';
-
-		if (!method_exists($this, $driverMethod)) {
-            throw new InvalidArgumentException("CutMode [{$config['driver']}] is not supported.");
-        }
-
-		foreach ($cutConfig['aspect'] as $key => $value) {
-			$this->{$cutMode}($value);
-		}
-	}
-
-
-	/**
-	 * 正方形裁剪
-	 * @author @smallnews 2017-04-15
+	 * 远程图片 复制 转存 折中方法，保存本地，之后再上传
+	 * @author @smallnews 2017-05-15
 	 * @return [type] [description]
 	 */
-	protected function cutSquareMode($size, $default = false){
-		if (is_array($size)) {
-			$size = $size[0];
-		}
+	public function uploadCopy($file_src, $type = 'avatars'){
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get($file_src);
+        $body = $response->getBody()->getContents();	// 图片数据流
 
-		$img = $this->img;
-		$img->fit($size, $size);
+		$this->file = $body;
 
-		$save_tmp_path = public_path().'/tmp_file/'.$this->filename;
-		$img->save($save_tmp_path);
+		$img = Image::make($body)->encode();
+		$mime = $img->mime();
+		$mime = explode('/', $mime);
 
-		$this->saveFile($save_tmp_path, $default);
+		$this->type = $type;
+		$this->extension = $mime[count($mime)-1];
+		$this->filename = $this->getHashName($file_src);
+		$this->filesize = $img->filesize();
+
+		return $this->saveFile(true);
 	}
 
 
-	protected function saveFile($file, $default){
-		$save_path = $this->getPath($default);
-
-		$this->storage->put($save_path, $save_tmp_path);
-	}
-
-
-	// 有待优化
-	protected function getPath($default){
-		if ($default) {
-			$this->returnPath = $save_path = $this->setDir()."/".$this->filename;
-		}else {
-			$save_path = $this->setDir()."/".$this->filename."_".$size.'.'.$this->entension;
-		}
-
-		return $save_path;
-	}
-
-
-	//设置文件保存目录
-	protected function setDir(){
-		$real_dir = '/'.date('Ymd').'/';
-
-		$this->storage->makeDirectory($this->real_dir);
-
-		return $real_dir;
-	}
-
-	protected function setProperty($file){
-		$this->extension = $file->getClientOriginalExtension();
-		$this->tmpPath = $file->getRealPath();
-		$this->mimeType = $file->getMimeType();
-		$this->filename = $file->hashName();
-	    $this->filesize = $file->getClientSize();
-	}
-
-
-	/*
-		获取 驱动
+	/**
+	 * 本地 资源文件 转存到 cos，js css
+	 * @author @smallnews 2017-06-08
+	 * @param  [type] $file_src [description]
+	 * @param  string $type     [description]
+	 * @return [type]           [description]
 	 */
-	public function drive($name = null)
-    {
-        $name = $name ?: $this->getDefaultDriver();
-
-		$this->storage = Storage::disk($name);
-
-		return $this;
-    }
-
-
-	protected function getConfig($name)
-    {
-        return $this->app['config']["uploadsize.mode.{$name}"];
-    }
+	// public function uploadAsset($file_src, $save_path = '/asset/'){
+	// 	$this->makeDirectory($save_path);
+	//
+	// 	$save_name = $this->normalizerPath($save_path."/".basename($file_src));
+	// 	$ret = $this->disk()::upload($file_src, $save_name);
+	//
+	// 	if ($ret['code']){
+	// 		return $this->returnMessage("上传失败", 1);
+	// 	} else {
+	// 		return $this->returnMessage("上传成功", 0);
+	// 	}
+	// }
 
 
-	protected function getDefaultFile(){
-		if (Requests::hasFile('file')) {
-			return Requests::file('file');
-		}else {
-			abort('404');
+
+	private function saveFile($is_stream = false){
+		// 设置上传目录
+		$this->upload_dir = $this->createUploadDir($this->type);		// 上传目录	articles/20171020
+		$this->upload_url = $this->getUploadUrl();						// 上传文件 articles/20171020/2xjx4yhgq.png
+
+		if(!$this->exists($this->upload_url)){
+			if ($is_stream) {
+				$ret = $this->disk()->put($this->upload_url, $this->file);	// $this->file 是数据流，第一个参数需要带上文件Ing
+			} else {
+				$ret = $this->disk()->put($this->upload_dir, $this->file);	// $this->file 是File 对象，不需要文件名
+			}
+
+			if ($ret){
+				return $this->returnMessage("上传成功", 0, [
+					'url' => $this->disk()->url($this->upload_url),
+					'origin_url' => $this->upload_url
+				]);
+			} else {
+				return $this->returnMessage("上传失败", 1);
+			}
+		}else{
+			return $this->returnMessage("上传成功", 0, [
+				'url' => $this->disk()->url($this->upload_url),
+				'origin_url' => $this->upload_url
+			]);
 		}
 	}
 
 
 	/**
-     * Get the default driver name.
-     *
-     * @return string
-     */
-    protected function getDefaultDriver()
-    {
-        return $this->app['config']['uploadsize.default'];
-    }
+	 * hash 文件名
+	 * @return [type] [description]
+	 */
+	private function getHashName($file_path){
+		return md5_file($file_path).'.'.$this->extension;
+	}
+
+
+	/**
+	 * 目录完整路径
+	 * @author @smallnews 2017-05-08
+	 * @param  [type] $type [description]
+	 * @return [type]       [description]
+	 */
+	private function createUploadDir($type){
+		$date_dir = date('Ymd');
+		$upload_dir = $type.'/'.$date_dir.'/';
+
+		if ($this->makeDirectory($upload_dir)){
+			return $upload_dir;
+		}
+	}
+
+	/**
+	 * 文件完整路径
+	 * @author @smallnews 2017-05-08
+	 * @param  [type] $type [description]
+	 * @return [type]       [description]
+	 */
+	private function getUploadUrl(){
+		return $this->upload_dir . $this->filename;
+	}
+
+	/**
+	 * 创建目录
+	 * @author @smallnews 2017-05-08
+	 * @param  [type] $dir [description]
+	 * @return [type]      [description]
+	 */
+	private function makeDirectory($dir){
+		$this->disk()->makeDirectory($dir);
+
+		return true;
+	}
+
+
+	/**
+	 * 目录是否存在
+	 * @author @smallnews 2017-05-10
+	 * @param  [type] $path [description]
+	 * @return [type]       [description]
+	 */
+	private function existsFolder($path){
+
+	}
+
+
+	/**
+	 * 文件是否存在
+	 * @author @smallnews 2017-05-10
+	 * @param  [type] $path [description]
+	 * @return [type]       [description]
+	 */
+	private function exists($path){
+		return $this->disk()->has($path);
+	}
+
+
+	/**
+	 * 优化 url 图片地址
+	 * @author @smallnews 2017-05-10
+	 * @param  [type] $path [description]
+	 * @return [type]       [description]
+	 */
+	public function normalizerPath($path) {
+		$path = preg_replace('#/+#', '/', $path);	// 如果中间出现  // 或者 ///... 替换成 /
+
+		if (!preg_match('/^(\/)/', $path)) {
+			$path = "/".$path;
+		}
+
+		return $path;
+	}
+
+
+	private function returnMessage($info, $error = 0, $data = []){
+		return [
+			'error' => $error,
+			'info' => $info,
+			'data' => $data
+		];
+	}
+
+
+	public function disk($disk = ''){
+		$disk = !empty($disk) ? $disk : $this->getDefault();
+		return Storage::disk($disk);
+	}
+
+	private function getDefault(){
+		return config('filesystems.default');
+	}
 }

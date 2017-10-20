@@ -168,9 +168,10 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,     // 图片处理
-        Baum\Providers\BaumServiceProvider::class,          // 无限级联
-        Overtrue\LaravelWechat\ServiceProvider::class,      // 微信sdk
+        Intervention\Image\ImageServiceProvider::class,         // 图片处理
+        Baum\Providers\BaumServiceProvider::class,              // 无限级联
+        Overtrue\LaravelWechat\ServiceProvider::class,          // 微信sdk
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,   // 二维码
 
         /*
          * Application Service Providers...
@@ -231,9 +232,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         // custom
-        'Image' => Intervention\Image\Facades\Image::class,     // 图片处理
-        'MyUpload' => App\Facades\MyUpload::class,              // 图片上传
-        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,   // 微信 sdk
+        'Image' => Intervention\Image\Facades\Image::class,         // 图片处理
+        'MyUpload' => App\Facades\MyUpload::class,                  // 图片上传
+        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,       // 微信 sdk
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,  // 二维码
     ],
 
 ];

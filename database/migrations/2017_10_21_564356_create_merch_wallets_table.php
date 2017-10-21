@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWalletsTable extends Migration
+class CreateMerchWalletsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CreateWalletsTable extends Migration
     public function up()
     {
         // 商户钱包表
-        Schema::create('wallets', function (Blueprint $table) {
+        Schema::create('merch_wallets', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('id')->unique();
             $table->decimal('money', 10, 2);
@@ -31,6 +31,6 @@ class CreateWalletsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wallets');
+        Schema::dropIfExists('merch_wallets');
     }
 }

@@ -26,18 +26,18 @@ class IndexController extends CommonController {
 
 		// 默认svg 格式
 		// https://github.com/SimpleSoftwareIO/simple-qrcode/
-		QrCode::generate('Hello,LaravelAcademy!', public_path('qrcodes/qrcode.svg'));
-		QrCode::format('png')
-			->encoding('UTF-8')
-			->size(200)
-			->color(255, 0, 255)
-			->backgroundColor(255, 255, 0)
-			->margin(1)
-			->merge('/public/images/no_pic.jpg', .15)
-			->generate('Hello,LaravelAcademy!', public_path('qrcodes/qrcode.png'));
-
-		$qrcode = QrCode::format('png')->size(300)->generate('this is png encode!');
-		return response($qrcode, 200)->header('Content-Type', "png");
+		// QrCode::generate('Hello,LaravelAcademy!', public_path('qrcodes/qrcode.svg'));
+		// QrCode::format('png')
+		// 	->encoding('UTF-8')
+		// 	->size(200)
+		// 	->color(255, 0, 255)
+		// 	->backgroundColor(255, 255, 0)
+		// 	->margin(1)
+		// 	->merge('/public/images/no_pic.jpg', .15)
+		// 	->generate('Hello,LaravelAcademy!', public_path('qrcodes/qrcode.png'));
+		//
+		// $qrcode = QrCode::format('png')->size(300)->generate('this is png encode!');
+		// return response($qrcode, 200)->header('Content-Type', "png");
 
 		// https://github.com/spatie/laravel-permission
 

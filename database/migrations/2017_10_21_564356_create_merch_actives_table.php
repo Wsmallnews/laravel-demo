@@ -17,7 +17,7 @@ class CreateMerchActivesTable extends Migration
         Schema::create('merch_actives', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('active_cat_id')->comment('活动分类id');
+            $table->integer('active_cat_id')->comment('活动分类id');
             $table->string('content')->comment('活动内容');
             $table->smallInteger('sort_order')->comment('排序');
             $table->timestamps();

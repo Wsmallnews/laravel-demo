@@ -20,7 +20,7 @@ class CreateWalletLogsTable extends Migration
             $table->integer('user_id')->comment('用户 钱包 id');
             $table->decimal('money', 10, 2);
             $table->string('type')->comment('交易类型');
-            $table->string('item_id')->comment('交易关联项');
+            $table->integer('item_id')->comment('交易关联项');
             $table->tinyInteger('is_finish')->comment('是否完成，用于有锁定发生时');
             $table->timestamps();
         });
